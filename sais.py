@@ -1,82 +1,80 @@
 import time
 from memory_profiler import profile
 
-
-# This function calculates buckets for characters in the input string T
-def getBuckets(T):
-    count = {}  # A dictionary to count the occurrence of each character
-    buckets = {}  # A dictionary to store the ranges (buckets) for each character
+# Esta función calcula los buckets/cubetas para los caracteres en la cadena de entrada T
+def obtenerBuckets(T):
+    count = {}  # Un diccionario para contar la ocurrencia de cada carácter
+    buckets = {}  # Un diccionario para almacenar los rangos (buckets) de cada carácter
     for c in T:
-        count[c] = count.get(c, 0) + 1  # Count the occurrences of each character
+        count[c] = count.get(c, 0) + 1  # Se cuentan las ocurrencias de cada carácter
     start = 0
-    for c in sorted(count.keys()):  # Sort the characters
-        buckets[c] = (start, start + count[c])  # Assign a range (bucket) for each character
-        start += count[c]  # Update the start position for the next character
+    for c in sorted(count.keys()):  # Se ordenan los caracteres
+        buckets[c] = (start, start + count[c])  # Se asigna un rango (bucket) a cada carácter
+        start += count[c]  # Se actualiza la posición de inicio para el siguiente carácter
     return buckets
 
-#@profile
-# This is the main SAIS algorithm function
+# Esta es la función principal del algoritmo SAIS
 def sais(T):
-    t = ["_"] * len(T)  # Initialize an array 't' with the same length as T, filled with "_"
+    t = ["_"] * len(T)  # Se inicializa un arreglo 't' con la misma longitud que T, lleno de _
 
-    t[len(T) - 1] = "S"  # Mark the last character as "S"
+    t[len(T) - 1] = "S"  # Se marca el último carácter como "S", pues se sabe que es el carácter sentinela
 
-    # Determine whether each character is "S" or "L" based on comparisons with the next character
+    # Se etermina si cada carácter es "S" o "L" basándose en comparaciones con el siguiente carácter
     for i in range(len(T) - 1, 0, -1):
         if T[i - 1] == T[i]:
             t[i - 1] = t[i]
         else:
             t[i - 1] = "S" if T[i - 1] < T[i] else "L"
 
-    # Calculate buckets for characters in the input string T
-    buckets = getBuckets(T)
+    # S calculan los buckets para los caracteres en la cadena de entrada T
+    buckets = obtenerBuckets(T)
 
-    count = {}  # Initialize a dictionary to count characters
-    SA = [-1] * len(T)  # Initialize the suffix array with -1 values
-    LMS = {}  # Initialize a dictionary to store LMS substring positions
+    count = {}  # Se inicializa un diccionario para contar los caracteres
+    SA = [-1] * len(T)  # Se inicializa el arreglo de sufijos con valores de -1
+    LMS = {}  # Se inicializa un diccionario para almacenar las posiciones de las subcadenas LMS
     end = None
 
-    # Iterate through the input string T backward
+    # Se itera a través de la cadena de entrada T hacia atrás
     for i in range(len(T) - 1, 0, -1):
         if t[i] == "S" and t[i - 1] == "L":
-            # For S-type character followed by L-type character (LMS substring)
-            revoffset = count[T[i]] = count.get(T[i], 0) + 1  # Count occurrences of the character
-            # Calculate the position for this LMS substring and update the suffix array
+            # Para un carácter de tipo S seguido de un carácter de tipo L (subcadena LMS)
+            revoffset = count[T[i]] = count.get(T[i], 0) + 1  # Se cuentan las ocurrencias del carácter
+            # Se calcula la posición de esta subcadena LMS y se actualiza el arreglo de sufijos
             SA[buckets[T[i]][1] - revoffset] = i
 
             if end is not None:
-                LMS[i] = end  # Store the end position of this LMS substring
+                LMS[i] = end  # Se almacena la posición final de esta subcadena LMS
             end = i
 
-    LMS[len(T) - 1] = len(T) - 1  # Last character is always an LMS substring
-    count = {}  # Reset the count dictionary
+    LMS[len(T) - 1] = len(T) - 1  # El último carácter siempre es una subcadena LMS
+    count = {}  # Se reinicia el diccionario de conteo
 
-    # Iterate through the suffix array to place LMS substrings in their correct positions
+    # Se itera a través del arreglo de sufijos para colocar las subcadenas LMS en sus posiciones correctas
     for i in range(len(T)):
         if SA[i] >= 0:
             if t[SA[i] - 1] == "L":
                 symbol = T[SA[i] - 1]
                 offset = count.get(symbol, 0)
-                # Calculate the position for this LMS substring and update the suffix array
+                # Se calcula la posición de esta subcadena LMS y actualizar el arreglo de sufijos
                 SA[buckets[symbol][0] + offset] = SA[i] - 1
-                count[symbol] = offset + 1  # Update the count of this character
+                count[symbol] = offset + 1  # Se actualiza el conteo de este carácter
 
-    count = {}  # Reset the count dictionary
+    count = {}  # Se reinicia el diccionario de conteo
 
-    # Iterate through the suffix array again to refine positions of S-type characters
+    # Se itera a través del arreglo de sufijos nuevamente para refinar las posiciones de los caracteres de tipo S
     for i in range(len(T) - 1, 0, -1):
         if SA[i] > 0:
             if t[SA[i] - 1] == "S":
                 symbol = T[SA[i] - 1]
                 revoffset = count[symbol] = count.get(symbol, 0) + 1
-                # Calculate the position for this S-type character and update the suffix array
+                # Se calcula la posición de este carácter de tipo S y actualizar el arreglo de sufijos
                 SA[buckets[symbol][1] - revoffset] = SA[i] - 1
 
-    namesp = [-1] * len(T)  # Initialize a list to store LMS substring names
+    namesp = [-1] * len(T)  # Se Inicializa una lista para almacenar los nombres de las subcadenas LMS
     name = 0
     prev = None
 
-    # Assign unique names to LMS substrings and store them in 'namesp'
+    # Se asignan nombres únicos a las subcadenas LMS y almacenarlos en 'namesp'
     for i in range(len(SA)):
         if t[SA[i]] == "S" and t[SA[i] - 1] == "L":
             if prev is not None and T[SA[prev]:LMS[SA[prev]]] != T[SA[i]:LMS[SA[i]]]:
@@ -87,87 +85,73 @@ def sais(T):
     names = []
     SApIdx = []
 
-    # Collect LMS substring names and their positions
+    # Se recopilan los nombres de las subcadenas LMS y sus posiciones
     for i in range(len(T)):
         if namesp[i] != -1:
             names.append(namesp[i])
             SApIdx.append(i)
 
-    # If there are more than one unique names, recursively call 'sais' to sort them
+    # Si hay más de un nombre único, Se llama recursivamente a 'sais' para ordenarlos
     if name < len(names) - 1:
         names = sais(names)
 
-    names = list(reversed(names))  # Reverse the sorted names
+    names = list(reversed(names))  # Se revierten los nombres ordenados
 
-    SA = [-1] * len(T)  # Reset the suffix array
-    count = {}  # Reset the count dictionary
+    SA = [-1] * len(T)  # Se reinicia el arreglo de sufijos
+    count = {}  # Se reinicia el diccionario de conteo
 
-    # Place LMS substrings in their correct positions in the suffix array
+    # Se colocan las subcadenas LMS en sus posiciones correctas en el arreglo de sufijos
     for i in range(len(names)):
         pos = SApIdx[names[i]]
         revoffset = count[T[pos]] = count.get(T[pos], 0) + 1
         SA[buckets[T[pos]][1] - revoffset] = pos
 
-    count = {}  # Reset the count dictionary
+    count = {}  # Se reinicia el diccionario de conteo
 
-    # Refine positions of S-type characters in the suffix array
+    # Se refinan las posiciones de los caracteres de tipo S en el arreglo de sufijos
     for i in range(len(T)):
         if SA[i] >= 0:
             if t[SA[i] - 1] == "L":
                 symbol = T[SA[i] - 1]
                 offset = count.get(symbol, 0)
-                # Calculate the position for this S-type character and update the suffix array
+                # Se calcula la posición de este carácter de tipo S y actualizar el arreglo de sufijos
                 SA[buckets[symbol][0] + offset] = SA[i] - 1
                 count[symbol] = offset + 1
 
-    count = {}  # Reset the count dictionary
+    count = {}  # Se reinicia el diccionario de conteo
 
-    # Refine positions of S-type characters again in the suffix array
+    # Se refinan las posiciones de los caracteres de tipo S nuevamente en el arreglo de sufijos
     for i in range(len(T) - 1, 0, -1):
         if SA[i] > 0:
             if t[SA[i] - 1] == "S":
                 symbol = T[SA[i] - 1]
                 revoffset = count[symbol] = count.get(symbol, 0) + 1
-                # Calculate the position for this S-type character and update the suffix array
+                # Se calcula la posición de este carácter de tipo S y actualizar el arreglo de sufijos
                 SA[buckets[symbol][1] - revoffset] = SA[i] - 1
 
-    return SA  # Return the generated suffix array
+    return SA  # Se devuelve el arreglo de sufijos generado
 
-# Function to read a file and return its content as a string
-def read_file(filename):
+# Función para leer un archivo y devolver su contenido como una cadena
+def leer_archivo(nombre_archivo):
     try:
-        with open(filename, 'r', encoding='utf-8') as file:
-            content = file.read()
-        return content
+        with open(nombre_archivo, 'r', encoding='utf-8') as archivo:
+            contenido = archivo.read()
+        return contenido
     except FileNotFoundError:
-        print(f"File '{filename}' not found.")
+        print(f"Archivo '{nombre_archivo}' no encontrado.")
         return None
 
-# Get the input filename from the user
-filename = "./Libros/Book4.txt"
+# Se obtiene el nombre del archivo de entrada del usuario
+nombre_archivo = "./Libros/book4.txt"
 
-# Read the content of the file
-file_content = read_file(filename)
+# Se lee el contenido del archivo
+contenido_archivo = leer_archivo(nombre_archivo)
 
-if file_content:
-    # Measure the execution time
-    start_time = time.time()
+if contenido_archivo:
 
-    # Convert the file content into a list of character codes
-    T = [ord(c) for c in file_content]
+    # Se convierte el contenido del archivo en una lista de códigos de caracteres
+    T = [ord(c) for c in contenido_archivo]
+    T.append(0)
 
-    # Generate the suffix array for the input string
+    # Se genera el arreglo de sufijos para la cadena de entrada
     SA = sais(T)
-
-    # Calculate the execution time
-    end_time = time.time()
-    execution_time = end_time - start_time
-
-    # Print the suffix array and execution time
-    print("Suffix Array:")
-    print(SA)
-    print(f"Execution Time: {execution_time:.6f} seconds")
-    
-    # for iSuffix in SA:
-    #   substring = file_content[iSuffix:]
-    #   print(substring)
