@@ -7,13 +7,13 @@
 #include <utility>
 using namespace std;
 
-map<char32_t, pair<int, int>> getBuckets(vector<char32_t>& T) {
+map<int, pair<int, int>> getBuckets(vector<int>& T) {
 
     
     int start = 0;
-    map<char32_t, int> count;
-    map<char32_t, pair<int, int>> buckets;
-    vector<char32_t> keys;
+    map<int, int> count;
+    map<int, pair<int, int>> buckets;
+    vector<int> keys;
 
     for (int i = 0; i < T.size(); i++) {
         count[T[i]]++;
@@ -41,7 +41,7 @@ map<char32_t, pair<int, int>> getBuckets(vector<char32_t>& T) {
     return buckets;
 }
 
-vector<char32_t> sais(vector<char32_t> T) {
+vector<int> sais(vector<int> T) {
 
     int i = 0;
 
@@ -65,7 +65,7 @@ vector<char32_t> sais(vector<char32_t> T) {
         std::cout << c << " ";
     }*/
 
-    map<char32_t, std::pair<int, int>> buckets = getBuckets(T);
+    map<int, std::pair<int, int>> buckets = getBuckets(T);
 
     /*for (const auto& pair : buckets) {
         char32_t key = pair.first;
@@ -76,9 +76,9 @@ vector<char32_t> sais(vector<char32_t> T) {
 
     
 
-    map<char32_t, int> count;
+    map<int, int> count;
     vector<int> SA(T.size(), -1);
-    map<char32_t, int> LMS;
+    map<int, int> LMS;
     int end = NULL;
     int revoffset = 0;
     for (i = T.size() - 1; i > 0; i--) {
@@ -180,8 +180,8 @@ vector<char32_t> sais(vector<char32_t> T) {
         if (SA[i] - 1 >= 0 && t[SA[i]] == 'S' && t[SA[i] - 1] == 'L') {
             if (prev != -1) {
 
-                std::vector<char32_t> sub1(T.begin() + SA[prev], T.begin() + LMS[SA[prev]]);
-                std::vector<char32_t> sub2(T.begin() + SA[i], T.begin() + LMS[SA[i]]);
+                std::vector<int> sub1(T.begin() + SA[prev], T.begin() + LMS[SA[prev]]);
+                std::vector<int> sub2(T.begin() + SA[i], T.begin() + LMS[SA[i]]);
 
 
                 if (sub1 != sub2) {
@@ -223,7 +223,7 @@ vector<char32_t> sais(vector<char32_t> T) {
     }
     std::cout << std::endl;*/
 
-    vector<char32_t> names;
+    vector<int> names;
     vector<int> SApIdx;
     for (i = 0; i < T.size(); i++) {
         if (namesp[i] != -1) {
@@ -307,7 +307,7 @@ vector<char32_t> sais(vector<char32_t> T) {
         }
     }
 
-    vector<char32_t> FSA;
+    vector<int> FSA;
 
     for (i = 0; i < NewSA.size(); i++) {
         FSA.push_back(NewSA[i]);
@@ -324,15 +324,15 @@ int main() {
     cout << "Josafat Garcia Sarmientos | A01275684\n";
     cout << "Raul Diaz Romero          | A01735839\n";
 
-    string text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.$0";
-    vector<char32_t> char_text;
+    string text = "HOLA";
+    vector<int> char_text;
 
     for (int i = 0; i < text.length(); i++) {
-        char_text.push_back(static_cast<char32_t>(text[i]));
+        char_text.push_back(static_cast<int>(text[i]));
     }
 
   
-    vector<char32_t> V = sais(char_text);
+    vector<int> V = sais(char_text);
     for (int j = 0; j < V.size(); j++) {
         cout << V[j] << " ";
     }
