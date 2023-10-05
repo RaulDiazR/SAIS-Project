@@ -5,6 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include <utility>
+#include <fstream>
 using namespace std;
 
 map<int, pair<int, int>> getBuckets(vector<int>& T) {
@@ -318,24 +319,50 @@ vector<int> sais(vector<int> T) {
 
     return FSA;
 }
+// Función para leer un archivo
+string readFileToString(const string& filePath) {
+    ifstream inputFile(filePath, ios::in);
+    string fileContents;
+
+    if (inputFile.is_open()) {
+        string line;
+        while (getline(inputFile, line)) {
+            fileContents += line + " ";  // Adjunta líneas del texto
+        }
+        inputFile.close();
+    } else {
+        cerr << "Unable to open file: " << filePath << endl;
+    }
+
+    return fileContents;
+}
 
 int main() {
     cout << "SAIS ALGORITHM\n";
     cout << "Josafat Garcia Sarmientos | A01275684\n";
     cout << "Raul Diaz Romero          | A01735839\n";
 
-    string text = "HOLA";
-    vector<int> char_text;
+    string book;
+    cout << "Introduzca el nombre del archivo: " << endl;
+    cin >> book;
+    string path = "./Libros/"+book+".txt";
 
-    for (int i = 0; i < text.length(); i++) {
-        char_text.push_back(static_cast<int>(text[i]));
-    }
+    string text = readFileToString(path);
+    text.pop_back();
+    vector<int> char_text(text.begin(), text.end());
 
-  
+    char_text.push_back(0);
+
+    // for (int i = 0; i < char_text.size(); i++) {
+    //     cout << "(" << char_text[i] << ", " << (int)char_text[i] << ")";
+    // }
+    
     vector<int> V = sais(char_text);
-    for (int j = 0; j < V.size(); j++) {
-        cout << V[j] << " ";
+    cout << "[";
+    for (int j = 0; j < V.size()-1; j++) {
+        cout << V[j] << ", ";
     }
+    cout << V[V.size()-1] << "]";
 
 
     return 0;
