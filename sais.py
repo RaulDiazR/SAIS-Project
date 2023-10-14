@@ -142,7 +142,8 @@ def leer_archivo(nombre_archivo):
         return None
 
 # Se obtiene el nombre del archivo de entrada del usuario
-nombre_archivo = "./Libros/book4.txt"
+nombre_archivo = input("Introduzca el nombre del archivo:")
+nombre_archivo = "./Libros/"+nombre_archivo+".txt"
 
 # Se lee el contenido del archivo
 contenido_archivo = leer_archivo(nombre_archivo)
@@ -155,3 +156,4 @@ if contenido_archivo:
 
     # Se genera el arreglo de sufijos para la cadena de entrada
     SA = sais(T)
+    #print(SA)

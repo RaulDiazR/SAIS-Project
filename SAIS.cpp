@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <utility>
 #include <fstream>
+#include <bits/stdc++.h>
 using namespace std;
 
 map<int, pair<int, int>> getBuckets(vector<int>& T) {
@@ -320,37 +321,46 @@ vector<int> sais(vector<int> T) {
     return FSA;
 }
 // Función para leer un archivo
-string readFileToString(const string& filePath) {
-    ifstream inputFile(filePath, ios::in);
-    string fileContents;
-
-    if (inputFile.is_open()) {
-        string line;
-        while (getline(inputFile, line)) {
-            fileContents += line + " ";  // Adjunta líneas del texto
-        }
-        inputFile.close();
-    } else {
-        cerr << "Unable to open file: " << filePath << endl;
+string readFileToString() {
+  ifstream inputFile;
+  string book, path;
+  
+  do {
+    cout << "Introduzca el nombre del archivo: " << endl;
+    cin >> book;
+    path = "./Libros/"+book+".txt";
+    inputFile.open(path);
+    
+    if (inputFile.fail()) {
+      cout << "No se pudo abrir el archivo: " << path << endl << endl;
     }
+  }
+  while (inputFile.fail());
 
-    return fileContents;
+  string fileContents;
+  stringstream buffer;
+
+  buffer << inputFile.rdbuf();
+
+  fileContents = buffer.str();
+
+  inputFile.close();
+
+  return fileContents;
 }
 
 int main() {
+    clock_t start, end;
+    /* Recording the starting clock tick.*/
+    start = clock();
     cout << "SAIS ALGORITHM\n";
     cout << "Josafat Garcia Sarmientos | A01275684\n";
     cout << "Raul Diaz Romero          | A01735839\n";
 
-    string book;
-    cout << "Introduzca el nombre del archivo: " << endl;
-    cin >> book;
-    string path = "./Libros/"+book+".txt";
+    string file = readFileToString();
 
-    string text = readFileToString(path);
-    text.pop_back();
-    vector<int> char_text(text.begin(), text.end());
-
+    vector<int> char_text(file.begin(), file.end());
+    
     char_text.push_back(0);
 
     // for (int i = 0; i < char_text.size(); i++) {
@@ -358,12 +368,17 @@ int main() {
     // }
     
     vector<int> V = sais(char_text);
-    cout << "[";
+    /*cout << "[";
     for (int j = 0; j < V.size()-1; j++) {
         cout << V[j] << ", ";
     }
-    cout << V[V.size()-1] << "]";
+    cout << V[V.size()-1] << "]";*/
 
-
+    // Recording the end clock tick.    
+    end = clock();
+    // Calculating total time taken by the program.
+    double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
+    cout << "Time taken by program is : " << time_taken << setprecision(5);
+    cout << " sec " << endl;
     return 0;
 }
