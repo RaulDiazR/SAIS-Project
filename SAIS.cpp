@@ -21,10 +21,6 @@ map<int, pair<int, int>> getBuckets(vector<int>& T) {
         count[T[i]]++;
     }
 
-    /*for (const auto& pair : count) {
-      cout << "Elemento: " << pair.first << ", Frecuencia: " << pair.second << std::endl;
-    }*/
-
     for (const auto& pair : count) {
         keys.push_back(pair.first);
     }
@@ -36,23 +32,16 @@ map<int, pair<int, int>> getBuckets(vector<int>& T) {
         start += count[key];
     }
 
-    /*for (const auto& pair : keys) {
-        std::cout << "Elemento: " << pair << ", Rango: [" << buckets[pair].first << ", " << buckets[pair].second << "]" << std::endl;
-    }*/
-
     return buckets;
 }
 
-vector<int> sais(vector<int> T) {
+vector<int> sais(vector<int>& T) {
 
     int i = 0;
 
     vector<char> t(T.size() - 1, '_');
     t.push_back('S');
     t.push_back('0');
-    /*for (char c : t) {
-        std::cout << c << " ";
-    }*/
 
     for ( i = T.size()-1; i > 0; i--) {
         if (T[i - 1] == T[i]) {
@@ -63,20 +52,8 @@ vector<int> sais(vector<int> T) {
         }
     }
 
-    /*for (char c : t) {
-        std::cout << c << " ";
-    }*/
 
     map<int, std::pair<int, int>> buckets = getBuckets(T);
-
-    /*for (const auto& pair : buckets) {
-        char32_t key = pair.first;
-        int start = pair.second.first;
-        int end = pair.second.second;
-        std::cout << "Key: " << key << ", Start: " << start << ", End: " << end << std::endl;
-    }*/
-
-    
 
     map<int, int> count;
     vector<int> SA(T.size(), -1);
@@ -95,24 +72,6 @@ vector<int> sais(vector<int> T) {
         }
     }
 
-    /*std::cout << "Count 1:" << std::endl;
-    for (const auto& pair : count) {
-        std::cout << "Key: " << pair.first << ", Value: " << pair.second << " ";
-    }
-    cout << std::endl;
-
-    std::cout << "SA 1:" << std::endl;
-    for (int i = 0; i < SA.size(); i++) {
-        std::cout << SA[i] << " ";
-    }
-    cout << std::endl;
-
-    std::cout << "LMS 1:" << std::endl;
-    for (const auto& pair : LMS) {
-        std::cout << "Key: " << pair.first << ", Value: " << pair.second << " ";
-    }
-    cout << std::endl;*/
-
     LMS[T.size() - 1] = T.size() - 1;
     count.clear();
     char32_t symbol = NULL;
@@ -128,24 +87,6 @@ vector<int> sais(vector<int> T) {
         }
     }
 
-    /*std::cout << "Count 2:" << std::endl;
-    for (const auto& pair : count) {
-        std::cout << "Key: " << pair.first << ", Value: " << pair.second << " ";
-    }
-    cout << std::endl;
-
-    std::cout << "SA 2:" << std::endl;
-    for (int i = 0; i < SA.size(); i++) {
-        std::cout << SA[i] << " ";
-    }
-    cout << std::endl;
-
-    std::cout << "LMS 2:" << std::endl;
-    for (const auto& pair : LMS) {
-        std::cout << "Key: " << pair.first << ", Value: " << pair.second << " ";
-    }
-    cout << std::endl;*/
-
     count.clear();
     for (i = T.size() - 1; i > 0; i--) {
         if (SA[i] > 0) {
@@ -156,24 +97,6 @@ vector<int> sais(vector<int> T) {
             }
         }
     }
-
-    /*std::cout << "Count 3:" << std::endl;
-    for (const auto& pair : count) {
-        std::cout << "Key: " << pair.first << ", Value: " << pair.second << " ";
-    }
-    cout << std::endl;
-
-    std::cout << "SA 3:" << std::endl;
-    for (int i = 0; i < SA.size(); i++) {
-        std::cout << SA[i] << " ";
-    }
-    cout << std::endl;
-
-    std::cout << "LMS 3:" << std::endl;
-    for (const auto& pair : LMS) {
-        std::cout << "Key: " << pair.first << ", Value: " << pair.second << " ";
-    }
-    cout << std::endl;*/
 
     vector<int> namesp(T.size(), -1);
     int name = 0;
@@ -188,11 +111,6 @@ vector<int> sais(vector<int> T) {
 
                 if (sub1 != sub2) {
 
-                    /*std::cout << "SA[prev]: " << SA[prev] << std::endl;
-                    std::cout << "LMS[SA[prev]]: " << LMS[SA[prev]] << std::endl;
-                    std::cout << "SA[i]: " << SA[i] << std::endl;
-                    std::cout << "LMS[SA[i]]: " << LMS[SA[i]] << std::endl;*/
-
                     name++;
                 }
             }
@@ -201,29 +119,6 @@ vector<int> sais(vector<int> T) {
         }
     }
 
-    /*std::cout << "Count 4:" << std::endl;
-    for (const auto& pair : count) {
-        std::cout << "Key: " << pair.first << ", Value: " << pair.second << " ";
-    }
-    cout << std::endl;
-
-    std::cout << "SA 4:" << std::endl;
-    for (int i = 0; i < SA.size(); i++) {
-        std::cout << SA[i] << " ";
-    }
-    cout << std::endl;
-
-    std::cout << "LMS 4:" << std::endl;
-    for (const auto& pair : LMS) {
-        std::cout << "Key: " << pair.first << ", Value: " << pair.second << " ";
-    }
-    cout << std::endl;
-
-    std::cout << "NAME SP:" << std::endl;
-    for (int i = 0; i < namesp.size(); i++) {
-        std::cout << namesp[i] << " ";
-    }
-    std::cout << std::endl;*/
 
     vector<int> names;
     vector<int> SApIdx;
@@ -234,20 +129,6 @@ vector<int> sais(vector<int> T) {
         }
     }
 
-    //cout << "NAME" << name << endl;
-    //// Imprimir el vector 'names'
-    //std::cout << "names vector:" << std::endl;
-    //for (const char32_t& name : names) {
-    //    std::cout << name << " ";
-    //}
-    //std::cout << std::endl;
-
-    //// Imprimir el vector 'SApIdx'
-    //std::cout << "SApIdx vector:" << std::endl;
-    //for (const int& idx : SApIdx) {
-    //    std::cout << idx << " ";
-    //}
-    //std::cout << std::endl;
 
     if (name < names.size() - 1) {
       
@@ -265,25 +146,6 @@ vector<int> sais(vector<int> T) {
         NewSA[buckets[T[pos]].second - revoffset] = pos;
     }
 
-    // Imprimir el vector 'names'
-    /*std::cout << "Names:" << std::endl;
-    for (char32_t name : names) {
-        std::cout << name << " ";
-    }
-    std::cout << std::endl;*/
-
-    //// Imprimir el vector 'NewSA'
-    //std::cout << "NewSA vector:" << std::endl;
-    //for (int element : NewSA) {
-    //    std::cout << element << " ";
-    //}
-    //std::cout << std::endl;
-
-    //// Imprimir el map 'count'
-    //std::cout << "count map:" << std::endl;
-    //for (const auto& pair : count) {
-    //    std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
-    //}
 
     count.clear();
     for (i = 0; i < T.size(); i++) {
@@ -313,9 +175,7 @@ vector<int> sais(vector<int> T) {
 
     for (i = 0; i < NewSA.size(); i++) {
         FSA.push_back(NewSA[i]);
-        //cout << FSA[i] << " ";
     }
-    //cout << endl;
    
 
     return FSA;
@@ -351,7 +211,6 @@ string readFileToString() {
 
 int main() {
     clock_t start, end;
-    /* Recording the starting clock tick.*/
     start = clock();
     cout << "SAIS ALGORITHM\n";
     cout << "Josafat Garcia Sarmientos | A01275684\n";
@@ -363,9 +222,6 @@ int main() {
     
     char_text.push_back(0);
 
-    // for (int i = 0; i < char_text.size(); i++) {
-    //     cout << "(" << char_text[i] << ", " << (int)char_text[i] << ")";
-    // }
     
     vector<int> V = sais(char_text);
     /*cout << "[";
