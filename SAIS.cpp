@@ -182,31 +182,66 @@ vector<int> sais(vector<int>& T) {
 }
 // Función para leer un archivo
 string readFileToString() {
-  ifstream inputFile;
-  string book, path;
+    ifstream inputFile;
+    string book, path;
   
-  do {
-    cout << "Introduzca el nombre del archivo: " << endl;
-    cin >> book;
-    path = "./Libros/"+book+".txt";
-    inputFile.open(path);
+    do {
+        cout << "Introduzca el nombre del archivo: " << endl;
+        cin >> book;
+        path = "./Libros/"+book+".txt";
+        inputFile.open(path);
     
-    if (inputFile.fail()) {
-      cout << "No se pudo abrir el archivo: " << path << endl << endl;
+        if (inputFile.fail()) {
+            cout << "No se pudo abrir el archivo: " << path << endl << endl;
+        }
     }
-  }
-  while (inputFile.fail());
+    while (inputFile.fail());
 
-  string fileContents;
-  stringstream buffer;
+    string fileContents;
+    stringstream buffer;
 
-  buffer << inputFile.rdbuf();
+    buffer << inputFile.rdbuf();
 
-  fileContents = buffer.str();
+    fileContents = buffer.str();
 
-  inputFile.close();
+    inputFile.close();
 
-  return fileContents;
+    return fileContents;
+}
+
+string textToSearch() {
+    string text = "";
+    cout << "Introduzca la palabra a buscar: " << endl;
+    cin >> text;
+
+    return text;
+}
+
+
+vector<int> find_all_suffix_occurrences(const vector<int>& suffix_array, const string& target_suffix, const string& text) {
+    int left = 0;
+    int right = suffix_array.size() - 1;
+    vector<int> occurrences;
+
+    while (left <= right) {
+        int mid = (left + right) / 2;
+        string suffix = text.substr(suffix_array[mid]);
+
+        if (suffix == target_suffix) {
+            occurrences.push_back(suffix_array[mid]);  // Almacena la posición en el Suffix Array
+            // Continuar buscando hacia la izquierda y la derecha
+            left = mid + 1;
+            right = mid - 1;
+        }
+        else if (suffix < target_suffix) {
+            left = mid + 1;
+        }
+        else {
+            right = mid - 1;
+        }
+    }
+
+    return occurrences;
 }
 
 int main() {
@@ -217,18 +252,27 @@ int main() {
     cout << "Raul Diaz Romero          | A01735839\n";
 
     string file = readFileToString();
+    string text = textToSearch();
 
     vector<int> char_text(file.begin(), file.end());
     
     char_text.push_back(0);
 
     
-    vector<int> V = sais(char_text);
+    vector<int> suffix_result = sais(char_text);
     /*cout << "[";
     for (int j = 0; j < V.size()-1; j++) {
         cout << V[j] << ", ";
     }
     cout << V[V.size()-1] << "]";*/
+
+    vector<int> allOccurrences = find_all_suffix_occurrences(suffix_result, text, file);
+
+    cout << "[";
+    for (int j = 0; j < allOccurrences.size(); j++) {
+        cout << allOccurrences[j] << ", ";
+    }
+    cout << "]";
 
     // Recording the end clock tick.    
     end = clock();
