@@ -218,22 +218,37 @@ string textToSearch() {
 }
 
 
-vector<int> find_all_suffix_occurrences(const vector<int>& suffix_array, const string& target_suffix, const string& text) {
+std::vector<int> find_all_suffix_occurrences(const std::vector<int>& suffix_array, const std::string& target_suffix, const std::string& text) {
     int left = 0;
     int right = suffix_array.size() - 1;
-    vector<int> occurrences;
+    std::vector<int> occurrences;
 
     while (left <= right) {
         int mid = (left + right) / 2;
-        string suffix = text.substr(suffix_array[mid]);
+        std::string suffix = text.substr(suffix_array[mid]);
 
-        if (suffix == target_suffix) {
-            occurrences.push_back(suffix_array[mid]);  // Almacena la posición en el Suffix Array
-            // Continuar buscando hacia la izquierda y la derecha
+        std::cout << suffix << std::endl;
+
+
+        if (suffix[0] == target_suffix[0]) {
+
+            int index = 0;
+
+            while (index != suffix.size())
+            {
+                int pos = suffix.compare(index, target_suffix.size(), target_suffix);
+
+                if (pos == 0) {
+                    occurrences.push_back(index + 1);
+                }
+
+                index++;
+            }
+
             left = mid + 1;
             right = mid - 1;
         }
-        else if (suffix < target_suffix) {
+        else if (suffix[0] < target_suffix[0]) {
             left = mid + 1;
         }
         else {
