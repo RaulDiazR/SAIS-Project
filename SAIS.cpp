@@ -155,7 +155,6 @@ vector<int> sais(vector<int>& T) {
         }
     }
 
-
     vector<int> names;
     vector<int> SApIdx;
     for (i = 0; i < T.size(); i++) {
@@ -164,7 +163,6 @@ vector<int> sais(vector<int>& T) {
             SApIdx.push_back(i);
         }
     }
-
 
     if (name < names.size() - 1) {
       
@@ -189,7 +187,6 @@ vector<int> sais(vector<int>& T) {
         // utilizando la información del cubo (bucket) para el símbolo T[pos].
     }
 
-
     // Limpia el mapa 'count' nuevamente.
     count.clear();
     for (i = 0; i < T.size(); i++) {
@@ -211,7 +208,6 @@ vector<int> sais(vector<int>& T) {
         }
     }
 
-
     // Limpia el mapa 'count' nuevamente.
     count.clear();
     for (i = T.size() - 1; i > 0; i--) {
@@ -230,14 +226,12 @@ vector<int> sais(vector<int>& T) {
         }
     }
 
-
     // Al final, se prepara el vector 'FSA' a partir de 'NewSA' y se lo devuelve.
     vector<int> FSA;
 
     for (i = 0; i < NewSA.size(); i++) {
         FSA.push_back(NewSA[i]);
     }
-   
 
     return FSA;
 }
@@ -252,20 +246,15 @@ string readFileToString() {
         cin >> book;
         path = "./Libros/"+book+".txt";
         inputFile.open(path);
-    
         if (inputFile.fail()) {
             cout << "No se pudo abrir el archivo: " << path << endl << endl;
         }
     }
     while (inputFile.fail());
-
     string fileContents;
     stringstream buffer;
-
     buffer << inputFile.rdbuf();
-
     fileContents = buffer.str();
-
     inputFile.close();
 
     return fileContents;
@@ -294,7 +283,6 @@ std::vector<int> all_occurrences(const std::vector<int>& suffix_array, const std
         if (text[suffix_array[middle]] == target_suffix[0]) {  // Comprueba si el primer carácter de "target_suffix" coincide con el carácter correspondiente en "text".
 
             index = 0;  // Inicializa "index" en 0.
-            std::cout << text.substr(suffix_array[middle + index], target_suffix.size());  // Imprime una subcadena de "text" basada en el valor de "middle" y "index".
 
             while (text[suffix_array[middle + index]] == target_suffix[0]) {  // Entra en un bucle mientras los caracteres coincidan.
                 if (text.substr(suffix_array[middle + index], target_suffix.size()) == target_suffix) {  // Comprueba si la subcadena coincide con "target_suffix".
@@ -324,8 +312,10 @@ std::vector<int> all_occurrences(const std::vector<int>& suffix_array, const std
 
 
 int main() {
-    clock_t start, end;
-    
+    // variables para mantener un registro del tiempo de ejecución
+    //clock_t start, end;
+    // start = clock();
+
     cout << "SAIS ALGORITHM\n";
     cout << "Josafat Garcia Sarmientos | A01275684\n";
     cout << "Raul Diaz Romero          | A01735839\n";
@@ -333,7 +323,7 @@ int main() {
     string file = readFileToString();
     string text = textToSearch();
 
-    start = clock();
+    
 
     vector<int> char_text(file.begin(), file.end());
     
@@ -342,29 +332,29 @@ int main() {
     
     vector<int> suffix_result = sais(char_text);
     
-    //vector<int> allOccurrences = find_all_suffix_occurrences(suffix_result, text, file);
     std::vector<int> allOccurrences = all_occurrences(suffix_result, text, file);
     int count = 0;
 
-    
-    for (int j = 0; j < allOccurrences.size(); j++) {
-        
-        cout << "Index At: " << allOccurrences[j] << " Value: ";
-        for (int i = 0; i < text.size(); i++) {
-            cout << file[allOccurrences[j] + i];
-        }
-        cout << endl;
-        count++;
+    cout << endl << "Arreglo de posiciones en donde se encuentra la palabra:" << endl;
+    if (allOccurrences.size() > 0){
+      cout << "[";
+      for (int j = 0; j < allOccurrences.size()-1; j++) {
+          cout << allOccurrences[j] << ", ";
+          count++;
+      }
+      cout << allOccurrences[allOccurrences.size()-1] << "]" << endl;
+      count++;
     }
     
 
-    cout << "Ocurrencias Totales: " << count;
+    cout << "Ocurrencias Totales: " << count << endl;
 
-    // Recording the end clock tick.    
-    end = clock();
-    // Calculating total time taken by the program.
-    double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
-    cout << "Time taken by program is : " << time_taken << setprecision(5);
-    cout << " sec " << endl;
+    // Esta parte del código se encarga de recabar el tiempo de ejecución del programa con ticks del reloj interno de la computadora
+    // // Recording the end clock tick.    
+    // end = clock();
+    // // Calculating total time taken by the program.
+    // double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
+    // cout << "Time taken by program is : " << time_taken << setprecision(5);
+    // cout << " sec " << endl;
     return 0;
 }
