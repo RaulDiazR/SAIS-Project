@@ -218,6 +218,52 @@ string textToSearch() {
 }
 
 
+std::vector<int> all_occurrences(const std::vector<int>& suffix_array, const std::string& target_suffix, const std::string& text) {
+    std::vector<int> list_indexes;
+    int left = 0;
+    int right = suffix_array.size() - 1;
+    int middle = (right - left) / 2;
+    int index = 0;
+
+    while (left <= right) {
+        middle = (left + right) / 2;
+
+        if (text[suffix_array[middle]] == target_suffix[0]) {
+
+            //list_indexes.push_back(suffix_array[middle]);
+            index = 0;
+            std::cout << text.substr(suffix_array[middle + index], target_suffix.size());
+            while (text[suffix_array[middle + index]] == target_suffix[0]) {
+                if (text.substr(suffix_array[middle + index], target_suffix.size()) == target_suffix) {
+                    list_indexes.push_back(suffix_array[middle + index]);
+                }
+
+                index++;
+            }
+
+            index = -1;
+            while (text[suffix_array[middle + index]] == target_suffix[0]) {
+                if (text.substr(suffix_array[middle + index], target_suffix.size()) == target_suffix) {
+                    list_indexes.push_back(suffix_array[middle + index]);
+                }
+
+                index--;
+            }
+
+            return list_indexes;
+        }
+        else if (text[suffix_array[middle]] < target_suffix[0]) {
+            left = middle + 1;
+        }
+        else {
+            right = middle - 1;
+        }
+
+    }
+
+}
+
+
 std::vector<int> find_all_suffix_occurrences(const std::vector<int>& suffix_array, const std::string& target_suffix, const std::string& text) {
     int left = 0;
     int right = suffix_array.size() - 1;
@@ -227,28 +273,43 @@ std::vector<int> find_all_suffix_occurrences(const std::vector<int>& suffix_arra
         int mid = (left + right) / 2;
         std::string suffix = text.substr(suffix_array[mid]);
 
-        std::cout << suffix << std::endl;
+        //std::cout << suffix << std::endl;
 
 
-        if (suffix[0] == target_suffix[0]) {
+        if (suffix[0] == target_suffix[0]) {      
 
             int index = 0;
+            int len = text.size() - suffix.size();
+            int pos = 0;
 
             while (index != suffix.size())
             {
-                int pos = suffix.compare(index, target_suffix.size(), target_suffix);
+                pos = suffix.compare(index, target_suffix.size(), target_suffix);
 
                 if (pos == 0) {
-                    occurrences.push_back(index + 1);
+                    occurrences.push_back(len + index);
                 }
 
                 index++;
             }
 
-            left = mid + 1;
-            right = mid - 1;
+            index = 0;
+
+            while (index != len)
+            {
+                pos = text.compare(index, target_suffix.size(), target_suffix);
+
+                if (pos == 0) {
+                    occurrences.push_back(index);
+                }
+
+                index++;
+            }
+
+            return occurrences;
+       
         }
-        else if (suffix[0] < target_suffix[0]) {
+        else if (suffix < target_suffix) {
             left = mid + 1;
         }
         else {
@@ -256,7 +317,6 @@ std::vector<int> find_all_suffix_occurrences(const std::vector<int>& suffix_arra
         }
     }
 
-    return occurrences;
 }
 
 int main() {
@@ -275,19 +335,24 @@ int main() {
 
     
     vector<int> suffix_result = sais(char_text);
-    /*cout << "[";
-    for (int j = 0; j < V.size()-1; j++) {
-        cout << V[j] << ", ";
-    }
-    cout << V[V.size()-1] << "]";*/
+    
+    //vector<int> allOccurrences = find_all_suffix_occurrences(suffix_result, text, file);
+    std::vector<int> allOccurrences = all_occurrences(suffix_result, text, file);
+    int count = 0;
 
-    vector<int> allOccurrences = find_all_suffix_occurrences(suffix_result, text, file);
-
-    cout << "[";
+    
     for (int j = 0; j < allOccurrences.size(); j++) {
-        cout << allOccurrences[j] << ", ";
+        
+        cout << "Index At: " << allOccurrences[j] << " Value: ";
+        for (int i = 0; i < text.size(); i++) {
+            cout << file[allOccurrences[j] + i];
+        }
+        cout << endl;
+        count++;
     }
-    cout << "]";
+    
+
+    cout << "Ocurrencias Totales: " << count;
 
     // Recording the end clock tick.    
     end = clock();
